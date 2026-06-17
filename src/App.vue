@@ -1,7 +1,22 @@
+<template>
+  <router-view />
+</template>
+
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
-<template>
-  <HelloWorld />
-</template>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #f7f4ef;
+  font-family:
+      Inter,
+      "PingFang SC",
+      sans-serif;
+}
+</style>
