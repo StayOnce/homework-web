@@ -68,6 +68,8 @@ import { ElMessage } from 'element-plus'
 
 import { login } from '../../api/auth'
 import { setToken } from '../../utils/auth'
+import { onMounted } from 'vue'
+import { getToken } from '../../utils/auth'
 
 const router = useRouter()
 

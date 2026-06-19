@@ -2,86 +2,96 @@
 
   <div class="layout">
 
-    <div class="sidebar">
+    <aside class="sidebar">
 
       <div class="logo">
-
         ☁️ Homework
-
       </div>
 
       <el-menu
           router
+          :default-active="$route.path"
           class="menu"
       >
 
         <el-menu-item index="/home">
-
           首页
-
         </el-menu-item>
 
         <el-menu-item index="/course">
-
           课程管理
-
         </el-menu-item>
 
         <el-menu-item index="/homework">
-
           作业管理
-
         </el-menu-item>
 
         <el-menu-item index="/score">
-
           成绩查询
-
         </el-menu-item>
 
         <el-menu-item index="/statistics">
-
           数据统计
-
         </el-menu-item>
 
       </el-menu>
 
-    </div>
+      <div
+          class="logout-box"
+          @click="logout"
+      >
+        退出登录
+      </div>
 
-    <div class="main">
+    </aside>
+
+    <main class="main">
 
       <router-view />
 
-    </div>
+    </main>
 
   </div>
 
 </template>
 
 <script setup>
+
+import { useRouter } from 'vue-router'
+import { removeToken } from '../utils/auth'
+
+const router = useRouter()
+
+const logout = () => {
+
+  removeToken()
+
+  router.push('/login')
+
+}
+
 </script>
 
 <style scoped>
 
-.layout{
+.layout {
 
-  height:100vh;
+  height: 100vh;
 
-  display:flex;
+  display: flex;
 
-  background:#f7f4ef;
+  background: #f8f5f1;
 }
 
-.sidebar{
+.sidebar {
 
-  width:240px;
+  width: 240px;
 
-  background:white;
+  margin: 20px;
 
-  margin:20px;
+  border-radius: 24px;
 
-  border-radius:24px;
+  background: #ffffff;
 
   box-shadow:
       0 10px 30px rgba(
@@ -90,39 +100,69 @@
           0,
           0.05
       );
+
+  display: flex;
+
+  flex-direction: column;
 }
 
-.logo{
+.logo {
 
-  height:80px;
+  height: 80px;
 
-  display:flex;
+  display: flex;
 
-  justify-content:center;
+  align-items: center;
 
-  align-items:center;
+  justify-content: center;
 
-  font-size:22px;
+  font-size: 24px;
 
-  font-weight:600;
+  font-weight: 600;
 
-  color:#555;
+  color: #6b6375;
 }
 
-.menu{
+.menu {
 
-  border:none;
+  flex: 1;
+
+  border-right: none;
 }
 
-.main{
+.logout-box {
 
-  flex:1;
+  height: 60px;
 
-  margin:
-      20px
-      20px
-      20px
-      0;
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  color: #6b6375;
+
+  border-top: 1px solid #f1f1f1;
+
+  transition: all .2s;
+}
+
+.logout-box:hover {
+
+  background: #faf8f5;
+
+  color: #aa3bff;
+}
+
+.main {
+
+  flex: 1;
+
+  padding: 20px 20px 20px 0;
+
+  overflow-y: auto;
 }
 
 </style>
