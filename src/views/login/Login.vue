@@ -4,7 +4,9 @@
 
     <div class="login-card">
 
-      <h1>课程作业管理系统</h1>
+      <h1>
+        课程作业管理系统
+      </h1>
 
       <p class="subtitle">
         Welcome Back ☁️
@@ -18,7 +20,8 @@
 
           <el-input
               v-model="form.username"
-              placeholder="用户名"
+              placeholder="请输入用户名"
+              size="large"
           />
 
         </el-form-item>
@@ -28,20 +31,26 @@
           <el-input
               v-model="form.password"
               type="password"
-              placeholder="密码"
+              placeholder="请输入密码"
+              size="large"
+              show-password
           />
 
         </el-form-item>
 
-        <el-button
-            class="login-btn"
-            type="primary"
-            @click="handleLogin"
-        >
+        <el-form-item>
 
-          登录
+          <el-button
+              type="primary"
+              class="login-btn"
+              @click="handleLogin"
+          >
 
-        </el-button>
+            登录
+
+          </el-button>
+
+        </el-form-item>
 
       </el-form>
 
@@ -54,9 +63,13 @@
 <script setup>
 
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { login } from '../../../src/api/auth'
-import { setToken } from '../../../src/utils/auth'
+
+import { login } from '../../api/auth'
+import { setToken } from '../../utils/auth'
+
+const router = useRouter()
 
 const form = reactive({
 
@@ -68,6 +81,22 @@ const form = reactive({
 
 const handleLogin = async () => {
 
+  if (!form.username) {
+
+    ElMessage.warning('请输入用户名')
+
+    return
+
+  }
+
+  if (!form.password) {
+
+    ElMessage.warning('请输入密码')
+
+    return
+
+  }
+
   try {
 
     const res = await login(form)
@@ -78,13 +107,17 @@ const handleLogin = async () => {
 
       ElMessage.success('登录成功')
 
+      router.push('/home')
+
     } else {
 
       ElMessage.error(res.data.message)
 
     }
 
-  } catch (e) {
+  } catch (error) {
+
+    console.error(error)
 
     ElMessage.error('登录失败')
 
@@ -96,28 +129,31 @@ const handleLogin = async () => {
 
 <style scoped>
 
-.login-page{
+.login-page {
 
-  height:100vh;
+  width: 100%;
 
-  display:flex;
+  height: 100vh;
 
-  justify-content:center;
+  display: flex;
 
-  align-items:center;
+  justify-content: center;
 
-  background:#f7f4ef;
+  align-items: center;
+
+  background: #f7f4ef;
+
 }
 
-.login-card{
+.login-card {
 
-  width:420px;
+  width: 420px;
 
-  background:white;
+  background: white;
 
-  padding:50px;
+  padding: 50px;
 
-  border-radius:24px;
+  border-radius: 24px;
 
   box-shadow:
       0 10px 30px rgba(
@@ -126,29 +162,33 @@ const handleLogin = async () => {
           0,
           0.05
       );
+
 }
 
-h1{
+h1 {
 
-  text-align:center;
+  text-align: center;
 
-  margin-bottom:10px;
+  color: #444;
 
-  color:#444;
+  margin-bottom: 12px;
+
 }
 
-.subtitle{
+.subtitle {
 
-  text-align:center;
+  text-align: center;
 
-  color:#999;
+  color: #999;
 
-  margin-bottom:30px;
+  margin-bottom: 30px;
+
 }
 
-.login-btn{
+.login-btn {
 
-  width:100%;
+  width: 100%;
+
 }
 
 </style>
