@@ -18,6 +18,7 @@
     <el-table
         :data="courseList"
         border
+        style="width:100%"
     >
 
       <el-table-column
@@ -32,7 +33,7 @@
 
       <el-table-column
           prop="teacherName"
-          label="教师"
+          label="授课教师"
       />
 
       <el-table-column
@@ -42,32 +43,225 @@
 
     </el-table>
 
+    <el-dialog
+        v-model="dialogVisible"
+        title="新增课程"
+        width="500px"
+    >
+
+      <el-form
+          :model="form"
+          label-width="90px"
+      >
+
+        <el-form-item label="课程名称">
+
+          <el-input
+              v-model="form.courseName"
+          />
+
+        </el-form-item>
+
+        <el-form-item label="课程编号">
+
+          <el-input
+              v-model="form.courseCode"
+          />
+
+        </el-form-item>
+
+        <el-form-item label="授课教师">
+
+          <el-select
+              v-model="form.teacherId"
+              placeholder="请选择教师"
+              style="width:100%"
+          >
+
+            <el-option
+                v-for="item in teacherList"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
+            />
+
+          </el-select>
+
+        </el-form-item>
+
+        <el-form-item label="课程描述">
+
+          <el-input
+              type="textarea"
+              :rows="4"
+              v-model="form.description"
+          />
+
+        </el-form-item>
+
+      </el-form>
+
+      <template #footer>
+
+        <el-button
+            @click="dialogVisible = false"
+        >
+          取消
+        </el-button>
+
+        <el-button
+            type="primary"
+            @click="submitForm"
+        >
+          确定
+        </el-button>
+
+      </template>
+
+    </el-dialog>
+
   </div>
 
 </template>
 
 <script setup>
 
-import { onMounted, ref } from 'vue'
+import {
+  ref,
+  onMounted
+} from 'vue'
+
+import {
+  getCourseList,
+  addCourse
+} from '../../api/course'
+
+import {
+  getTeacherList
+} from '../../api/user'
+
+import {
+  ElMessage
+} from 'element-plus'
 
 const courseList = ref([])
 
+const teacherList = ref([])
+
 const dialogVisible = ref(false)
 
-import { getCourseList }
-  from '../../api/course'
+const form = ref({
 
-onMounted(async () => {
+  courseName: '',
+
+  courseCode: '',
+
+  teacherId: '',
+
+  description: ''
+
+})
+
+const loadData = async () => {
 
   const res =
       await getCourseList()
 
-  if(res.data.code === 200){
+  if (res.data.code === 200) {
 
     courseList.value =
         res.data.data
 
   }
+
+}
+
+const loadTeacherList = async () => {
+
+  const res =
+      await getTeacherList()
+
+  if (res.data.code === 200) {
+
+    teacherList.value =
+        res.data.data
+
+  }
+
+}
+
+const submitForm = async () => {
+
+  if (!form.value.courseName) {
+
+    ElMessage.warning(
+        '请输入课程名称'
+    )
+
+    return
+
+  }
+
+  if (!form.value.courseCode) {
+
+    ElMessage.warning(
+        '请输入课程编号'
+    )
+
+    return
+
+  }
+
+  if (!form.value.teacherId) {
+
+    ElMessage.warning(
+        '请选择授课教师'
+    )
+
+    return
+
+  }
+
+  const res =
+      await addCourse(form.value)
+
+  if (res.data.code === 200) {
+
+    ElMessage.success(
+        '新增成功'
+    )
+
+    dialogVisible.value = false
+
+    form.value = {
+
+      courseName: '',
+
+      courseCode: '',
+
+      teacherId: '',
+
+      description: ''
+
+    }
+
+    await loadData()
+
+  } else {
+
+    ElMessage.error(
+        res.data.message
+    )
+
+  }
+
+}
+
+onMounted(() => {
+
+  loadData()
+
+  loadTeacherList()
 
 })
 
@@ -75,13 +269,13 @@ onMounted(async () => {
 
 <style scoped>
 
-.page-card{
+.page-card {
 
-  background:white;
+  background: white;
 
-  border-radius:24px;
+  border-radius: 24px;
 
-  padding:30px;
+  padding: 24px;
 
   box-shadow:
       0 10px 30px rgba(
@@ -90,15 +284,55 @@ onMounted(async () => {
           0,
           0.05
       );
+
 }
 
-.header{
+.header {
 
-  display:flex;
+  display: flex;
 
-  justify-content:space-between;
+  justify-content: space-between;
 
-  margin-bottom:20px;
+  align-items: center;
+
+  margin-bottom: 24px;
+
+}
+
+h2 {
+
+  margin: 0;
+
+  font-size: 24px;
+
+  font-weight: 600;
+
+  color: #6b6375;
+
+}
+
+:deep(.el-table) {
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+}
+
+:deep(.el-button--primary) {
+
+  background: #cdb4db;
+
+  border-color: #cdb4db;
+
+}
+
+:deep(.el-button--primary:hover) {
+
+  background: #b89ac8;
+
+  border-color: #b89ac8;
+
 }
 
 </style>

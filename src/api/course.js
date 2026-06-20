@@ -10,3 +10,16 @@ export function getCourseList() {
 
     })
 }
+
+export function addCourse(data) {
+
+    return request({
+
+        url: '/course/add',
+
+        method: 'post',
+
+        data
+
+    })
+}
