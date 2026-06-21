@@ -34,6 +34,10 @@
           数据统计
         </el-menu-item>
 
+        <el-menu-item index="/submit">
+          提交记录
+        </el-menu-item>
+
       </el-menu>
 
       <div

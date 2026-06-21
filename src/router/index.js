@@ -57,6 +57,12 @@ const routes = [
 
                 component: () =>
                     import('../views/statistics/Statistics.vue')
+            },
+
+            {
+                path:'submit',
+                component:() =>
+                    import('../views/submit/SubmitList.vue')
             }
 
         ]
