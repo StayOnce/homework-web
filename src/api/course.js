@@ -1,25 +1,21 @@
 import request from '../utils/request'
 
-export function getCourseList() {
+export const getCourseList = () => {
 
-    return request({
-
-        url: '/course/list',
-
-        method: 'get'
-
-    })
+    return request.get('/course/list')
 }
 
-export function addCourse(data) {
+export const addCourse = (data) => {
 
-    return request({
+    return request.post('/course/add', data)
+}
 
-        url: '/course/add',
+export const updateCourse = (data) => {
 
-        method: 'post',
+    return request.put('/course', data)
+}
 
-        data
+export const deleteCourse = (id) => {
 
-    })
+    return request.delete(`/course/${id}`)
 }

@@ -2,13 +2,14 @@
 
   <div class="page-card">
 
+    ```
     <div class="header">
 
       <h2>课程管理</h2>
 
       <el-button
           type="primary"
-          @click="dialogVisible = true"
+          @click="openAdd"
       >
         新增课程
       </el-button>
@@ -19,6 +20,7 @@
         :data="courseList"
         border
         style="width:100%"
+        empty-text="暂无课程数据"
     >
 
       <el-table-column
@@ -41,11 +43,36 @@
           label="课程描述"
       />
 
+      <el-table-column
+          label="操作"
+          width="180"
+      >
+
+        <template #default="scope">
+
+          <el-button
+              size="small"
+              @click="handleEdit(scope.row)"
+          >
+            编辑
+          </el-button>
+
+          <el-button
+              size="small"
+              @click="handleDelete(scope.row.id)"
+          >
+            删除
+          </el-button>
+
+        </template>
+
+      </el-table-column>
+
     </el-table>
 
     <el-dialog
         v-model="dialogVisible"
-        title="新增课程"
+        :title="isEdit ? '编辑课程' : '新增课程'"
         width="500px"
     >
 
@@ -119,6 +146,7 @@
       </template>
 
     </el-dialog>
+    ```
 
   </div>
 
@@ -133,7 +161,9 @@ import {
 
 import {
   getCourseList,
-  addCourse
+  addCourse,
+  updateCourse,
+  deleteCourse
 } from '../../api/course'
 
 import {
@@ -141,7 +171,8 @@ import {
 } from '../../api/user'
 
 import {
-  ElMessage
+  ElMessage,
+  ElMessageBox
 } from 'element-plus'
 
 const courseList = ref([])
@@ -150,7 +181,11 @@ const teacherList = ref([])
 
 const dialogVisible = ref(false)
 
+const isEdit = ref(false)
+
 const form = ref({
+
+  id: null,
 
   courseName: '',
 
@@ -190,13 +225,55 @@ const loadTeacherList = async () => {
 
 }
 
+const openAdd = () => {
+
+  isEdit.value = false
+
+  form.value = {
+
+    id: null,
+
+    courseName: '',
+
+    courseCode: '',
+
+    teacherId: '',
+
+    description: ''
+
+  }
+
+  dialogVisible.value = true
+
+}
+
+const handleEdit = (row) => {
+
+  isEdit.value = true
+
+  dialogVisible.value = true
+
+  form.value = {
+
+    id: row.id,
+
+    courseName: row.courseName,
+
+    courseCode: row.courseCode,
+
+    teacherId: row.teacherId,
+
+    description: row.description
+
+  }
+
+}
+
 const submitForm = async () => {
 
   if (!form.value.courseName) {
 
-    ElMessage.warning(
-        '请输入课程名称'
-    )
+    ElMessage.warning('请输入课程名称')
 
     return
 
@@ -204,9 +281,7 @@ const submitForm = async () => {
 
   if (!form.value.courseCode) {
 
-    ElMessage.warning(
-        '请输入课程编号'
-    )
+    ElMessage.warning('请输入课程编号')
 
     return
 
@@ -214,44 +289,68 @@ const submitForm = async () => {
 
   if (!form.value.teacherId) {
 
-    ElMessage.warning(
-        '请选择授课教师'
-    )
+    ElMessage.warning('请选择授课教师')
 
     return
 
   }
 
-  const res =
-      await addCourse(form.value)
+  let res
+
+  if (isEdit.value) {
+
+    res =
+        await updateCourse(form.value)
+
+  } else {
+
+    res =
+        await addCourse(form.value)
+
+  }
 
   if (res.data.code === 200) {
 
     ElMessage.success(
-        '新增成功'
+        isEdit.value
+            ? '修改成功'
+            : '新增成功'
     )
 
     dialogVisible.value = false
 
-    form.value = {
+    loadData()
 
-      courseName: '',
+  }
 
-      courseCode: '',
+}
 
-      teacherId: '',
+const handleDelete = async (id) => {
 
-      description: ''
+  try {
+
+    await ElMessageBox.confirm(
+
+        '确定删除该课程吗？',
+
+        '提示'
+
+    )
+
+    const res =
+        await deleteCourse(id)
+
+    if (res.data.code === 200) {
+
+      ElMessage.success(
+          '删除成功'
+      )
+
+      loadData()
 
     }
 
-    await loadData()
-
-  } else {
-
-    ElMessage.error(
-        res.data.message
-    )
+  } catch (e) {
 
   }
 
@@ -303,11 +402,11 @@ h2 {
 
   margin: 0;
 
+  color: #6b6375;
+
   font-size: 24px;
 
   font-weight: 600;
-
-  color: #6b6375;
 
 }
 
