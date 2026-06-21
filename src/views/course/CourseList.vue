@@ -8,6 +8,7 @@
       <h2>课程管理</h2>
 
       <el-button
+          v-if="role === 'admin'"
           type="primary"
           @click="openAdd"
       >
@@ -44,6 +45,7 @@
       />
 
       <el-table-column
+          v-if="role === 'admin'"
           label="操作"
           width="180"
       >
@@ -363,6 +365,13 @@ onMounted(() => {
   loadTeacherList()
 
 })
+
+import {
+  getRole
+} from '../../utils/auth'
+
+const role =
+    getRole()
 
 </script>
 

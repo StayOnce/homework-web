@@ -18,23 +18,75 @@
           首页
         </el-menu-item>
 
-        <el-menu-item index="/course">
+        <!-- 管理员：课程管理 -->
+        <el-menu-item
+            index="/course"
+            v-if="role === 'admin'"
+        >
           课程管理
         </el-menu-item>
 
-        <el-menu-item index="/homework">
+        <!-- 管理员：用户管理 -->
+        <el-menu-item
+            index="/user"
+            v-if="role === 'admin'"
+        >
+          用户管理
+        </el-menu-item>
+
+        <!-- 教师/管理员：作业管理 -->
+        <el-menu-item
+            index="/homework"
+            v-if="role === 'teacher' || role === 'admin'"
+        >
           作业管理
         </el-menu-item>
 
-        <el-menu-item index="/score">
+        <!-- 学生：查看作业 -->
+        <el-menu-item
+            index="/homework"
+            v-if="role === 'student'"
+        >
+          查看作业
+        </el-menu-item>
+
+        <!-- 教师：批改作业 -->
+        <el-menu-item
+            index="/grade"
+            v-if="role === 'teacher'"
+        >
+          批改作业
+        </el-menu-item>
+
+        <!-- 学生：提交作业 -->
+        <el-menu-item
+            index="/submit"
+            v-if="role === 'student'"
+        >
+          提交作业
+        </el-menu-item>
+
+        <!-- 所有人：成绩查询（学生） -->
+        <el-menu-item
+            index="/score"
+            v-if="role === 'student'"
+        >
           成绩查询
         </el-menu-item>
 
-        <el-menu-item index="/statistics">
+        <!-- 管理员/教师：数据统计 -->
+        <el-menu-item
+            index="/statistics"
+            v-if="role === 'admin' || role === 'teacher'"
+        >
           数据统计
         </el-menu-item>
 
-        <el-menu-item index="/submit">
+        <!-- 管理员：查看所有提交记录 -->
+        <el-menu-item
+            index="/submit"
+            v-if="role === 'admin'"
+        >
           提交记录
         </el-menu-item>
 
@@ -73,6 +125,13 @@ const logout = () => {
   router.push('/login')
 
 }
+
+import {
+  getRole
+} from '../utils/auth'
+
+const role =
+    getRole()
 
 </script>
 

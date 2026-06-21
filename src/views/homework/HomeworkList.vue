@@ -7,6 +7,7 @@
       <h2>作业管理</h2>
 
       <el-button
+          v-if="role === 'teacher'"
           type="primary"
           @click="dialogVisible = true"
       >
@@ -56,10 +57,17 @@
           </el-tag>
 
           <el-tag
+              v-else-if="scope.row.status === '已截止'"
+              type="danger"
+          >
+            已截止
+          </el-tag>
+
+          <el-tag
               v-else
               type="info"
           >
-            已结束
+            未发布
           </el-tag>
 
         </template>
@@ -67,6 +75,7 @@
       </el-table-column>
 
       <el-table-column
+          v-if="role === 'teacher'"
           label="操作"
           width="120"
       >
@@ -139,7 +148,7 @@
           <el-date-picker
               v-model="form.deadline"
               type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
+              value-format="YYYY-MM-DDTHH:mm:ss"
               style="width:100%"
           />
 
@@ -240,17 +249,7 @@ const loadCourse = async () => {
 const submitForm = async () => {
 
   const data = {
-
     ...form.value,
-
-    publishTime:
-        new Date()
-            .toISOString()
-            .slice(0,19)
-            .replace('T',' '),
-
-    status:'进行中'
-
   }
 
   const res =
@@ -300,6 +299,13 @@ onMounted(() => {
   loadCourse()
 
 })
+
+import {
+  getRole
+} from '../../utils/auth'
+
+const role =
+    getRole()
 
 </script>
 

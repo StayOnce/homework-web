@@ -65,28 +65,22 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-
-import { login } from '../../api/auth'
-import { setToken } from '../../utils/auth'
 import { onMounted } from 'vue'
+
+import { login, getUserInfo } from '../../api/auth'
+import { setToken, setRole } from '../../utils/auth'
 import { getToken } from '../../utils/auth'
 
 const router = useRouter()
 
 const form = reactive({
-
   username: '',
-
   password: ''
-
 })
 
 const handleLogin = async () => {
-
   if (!form.username) {
-
     ElMessage.warning('请输入用户名')
-
     return
 
   }
@@ -94,7 +88,6 @@ const handleLogin = async () => {
   if (!form.password) {
 
     ElMessage.warning('请输入密码')
-
     return
 
   }
@@ -105,23 +98,34 @@ const handleLogin = async () => {
 
     if (res.data.code === 200) {
 
-      setToken(res.data.data)
+      setToken(
+          res.data.data
+      )
 
-      ElMessage.success('登录成功')
+      const infoRes =
+          await getUserInfo()
+
+      if(infoRes.data.code === 200){
+
+        setRole(
+            infoRes.data.data.role
+        )
+
+      }
+
+      ElMessage.success(
+          '登录成功'
+      )
 
       router.push('/home')
 
-    } else {
-
-      ElMessage.error(res.data.message)
-
     }
 
-  } catch (error) {
+  } catch (e) {
 
-    console.error(error)
-
-    ElMessage.error('登录失败')
+    ElMessage.error(
+        '登录失败'
+    )
 
   }
 
