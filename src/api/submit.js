@@ -7,3 +7,12 @@ export const getSubmitList = () => {
     )
 
 }
+
+export const submitHomework = (data) => {
+
+    return request.post(
+        '/submit',
+        data
+    )
+
+}

@@ -6,7 +6,7 @@ const routes = [
 
     {
         path: '/',
-        redirect: '/home'
+        redirect: '/dashboard'
     },
 
     {
@@ -25,10 +25,10 @@ const routes = [
         children: [
 
             {
-                path: 'home',
+                path: 'dashboard',
 
                 component: () =>
-                    import('../views/home/Home.vue')
+                    import('../views/dashboard/Dashboard.vue')
             },
 
             {
@@ -36,6 +36,13 @@ const routes = [
 
                 component: () =>
                     import('../views/course/CourseList.vue')
+            },
+
+            {
+                path: 'user',
+
+                component: () =>
+                    import('../views/user/UserList.vue')
             },
 
             {
@@ -63,6 +70,12 @@ const routes = [
                 path:'submit',
                 component:() =>
                     import('../views/submit/SubmitList.vue')
+            },
+
+            {
+                path: 'grade',
+                component: () =>
+                    import('../views/grade/GradeList.vue')
             }
 
         ]
@@ -78,25 +91,20 @@ const router = createRouter({
 
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
 
     const token = getToken()
 
     if (to.path === '/login') {
-
-        next()
-
+        if (token) {
+            return '/dashboard'
+        }
         return
     }
 
     if (!token) {
-
-        next('/login')
-
-        return
+        return '/login'
     }
-
-    next()
 })
 
 export default router

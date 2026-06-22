@@ -24,3 +24,7 @@ export const deleteHomework = (id) => {
     )
 
 }
+
+export const updateHomework = (data) => {
+    return request.put('/homework/update', data)
+}
